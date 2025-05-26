@@ -1,0 +1,19 @@
+const express = require('express');
+const dotenv = require('dotenv');
+const errorHandler = require('./middlewares/errorHandler');
+const { router: rolesRouter } = require('./roles');
+const logger = require('./config/logger');
+
+dotenv.config();
+
+const app = express();
+app.use(express.json());
+
+app.use('/api/roles', rolesRouter);
+
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`);
+});

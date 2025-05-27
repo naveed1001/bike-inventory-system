@@ -15,11 +15,13 @@ CREATE TABLE roles (
 SELECT * FROM roles;
 SELECT * FROM permissions;
 SELECT * FROM role_permissions;
+SELECT * FROM banking_details;
 
 -- Commands Commented For later use if required
 -- DROP TABLE roles;
 -- DROP TABLE permissions;
 -- DROP TABLE role_permissions;
+DROP TABLE banking_details;
 
 CREATE TABLE permissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -171,6 +173,16 @@ INSERT INTO permissions (permission_name, permission_key) VALUES
 ('Access All System Reports', 'reports_view_all'),
 ('Access Dashboards and Analytical Tools', 'analytics_access');
 
-
-
-
+-- 4. Banking_Details
+CREATE TABLE banking_details (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    account_number VARCHAR(100) NOT NULL,
+    branch VARCHAR(100),
+    iban VARCHAR(50),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    UNIQUE (account_number),
+    UNIQUE (iban)
+);

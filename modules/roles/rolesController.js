@@ -1,5 +1,5 @@
 const RolesService = require('./rolesService');
-const asyncHandler = require("../utils/asyncHandler");
+const asyncHandler = require("../../middlewares/utils/asyncHandler");
 
 exports.getAllRoles = asyncHandler(async (req, res) => {
     const response = await RolesService.getAllRoles();

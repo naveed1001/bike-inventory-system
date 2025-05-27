@@ -4,12 +4,9 @@ const logger = require('../../config/logger');
 class PermissionsRepository {
     async findAll() {
         try {
-            logger.debug('Fetching all permissions from database');
             const [rows] = await pool.query('SELECT * FROM permissions WHERE deleted_at IS NULL');
-            logger.info('Successfully fetched all permissions', { count: rows.length });
             return rows;
         } catch (error) {
-            logger.error('Failed to fetch permissions', { error: error.message });
             throw new Error(`Failed to fetch permissions: ${error.message}`);
         }
     }
@@ -18,19 +15,14 @@ class PermissionsRepository {
         try {
             const parsedId = parseInt(id, 10);
             if (isNaN(parsedId) || parsedId <= 0) {
-                logger.warn(`Invalid permission ID provided: ${id}`);
                 throw new Error('Invalid permission ID');
             }
-            logger.debug(`Fetching permission with id: ${parsedId}`);
             const [rows] = await pool.query('SELECT * FROM permissions WHERE id = ? AND deleted_at IS NULL', [parsedId]);
             if (rows.length === 0) {
-                logger.warn(`Permission not found for id: ${parsedId}`);
                 throw new Error('Permission not found');
             }
-            logger.info(`Successfully fetched permission with id: ${parsedId}`);
             return rows[0];
         } catch (error) {
-            logger.error(`Failed to fetch permission with id: ${id}`, { error: error.message });
             throw new Error(`Failed to fetch permission: ${error.message}`);
         }
     }
@@ -39,10 +31,8 @@ class PermissionsRepository {
         let connection;
         try {
             if (!permissionData || typeof permissionData !== 'object' || !permissionData.permission_name || !permissionData.permission_key) {
-                logger.warn('Invalid permission data provided', { permissionData });
                 throw new Error('Permission name and key are required');
             }
-            logger.debug('Creating new permission', { permission_name: permissionData.permission_name, permission_key: permissionData.permission_key });
             connection = await pool.getConnection();
             await connection.beginTransaction();
             const [result] = await connection.query(
@@ -50,16 +40,13 @@ class PermissionsRepository {
                 [permissionData.permission_name, permissionData.permission_key]
             );
             await connection.commit();
-            logger.info('Successfully created permission', { id: result.insertId, permission_name: permissionData.permission_name });
             return { id: result.insertId, ...permissionData };
         } catch (error) {
             if (connection) await connection.rollback();
             if (error.code === 'ER_DUP_ENTRY') {
-                logger.warn('Permission key already exists', { permission_key: permissionData?.permission_key });
-                throw new Error('Permission key already exists');
+                throw new Error('Permission key already exists' , { permission_key: permissionData?.permission_key });
             }
-            logger.error('Failed to create permission', { error: error.message, permission_key: permissionData?.permission_key });
-            throw new Error(`Failed to create permission: ${error.message}`);
+            throw new Error('Failed to create permission', { error: error.message, permission_key: permissionData?.permission_key });
         } finally {
             if (connection) connection.release();
         }
@@ -70,14 +57,11 @@ class PermissionsRepository {
         try {
             const parsedId = parseInt(id, 10);
             if (isNaN(parsedId) || parsedId <= 0) {
-                logger.warn(`Invalid permission ID provided: ${id}`);
-                throw new Error('Invalid permission ID');
+                throw new Error(`Invalid permission ID provided: ${id}`);
             }
             if (!permissionData || typeof permissionData !== 'object' || !permissionData.permission_name || !permissionData.permission_key) {
-                logger.warn('Invalid permission data provided for update', { permissionData });
-                throw new Error('Permission name and key are required');
+                throw new Error('Permission name and key are required, Invalid permission data provided for update', { permissionData });
             }
-            logger.debug(`Updating permission with id: ${parsedId}`, { permission_name: permissionData.permission_name, permission_key: permissionData.permission_key });
             connection = await pool.getConnection();
             await connection.beginTransaction();
             const [result] = await connection.query(
@@ -85,20 +69,16 @@ class PermissionsRepository {
                 [permissionData.permission_name, permissionData.permission_key, parsedId]
             );
             if (result.affectedRows === 0) {
-                logger.warn(`Permission not found or already deleted for id: ${parsedId}`);
-                throw new Error('Permission not found or already deleted');
+                throw new Error(`Permission not found or already deleted for id: ${parsedId}`);
             }
             await connection.commit();
-            logger.info(`Successfully updated permission with id: ${parsedId}`, { permission_name: permissionData.permission_name });
             return { id: parsedId, ...permissionData };
         } catch (error) {
             if (connection) await connection.rollback();
             if (error.code === 'ER_DUP_ENTRY') {
-                logger.warn('Permission key already exists', { permission_key: permissionData?.permission_key });
-                throw new Error('Permission key already exists');
+                throw new Error('Permission key already exists', { permission_key: permissionData?.permission_key });
             }
-            logger.error(`Failed to update permission with id: ${id}`, { error: error.message, permission_key: permissionData?.permission_key });
-            throw new Error(`Failed to update permission: ${error.message}`);
+            throw new Error(`Failed to update permission with id: ${id}`, { error: error.message, permission_key: permissionData?.permission_key });
         } finally {
             if (connection) connection.release();
         }
@@ -109,10 +89,8 @@ class PermissionsRepository {
         try {
             const parsedId = parseInt(id, 10);
             if (isNaN(parsedId) || parsedId <= 0) {
-                logger.warn(`Invalid permission ID provided: ${id}`);
-                throw new Error('Invalid permission ID');
+                throw new Error(`Invalid permission ID provided: ${id}`);
             }
-            logger.debug(`Attempting to soft delete permission with id: ${parsedId}`);
             connection = await pool.getConnection();
             await connection.beginTransaction();
             const [result] = await connection.query(
@@ -120,24 +98,20 @@ class PermissionsRepository {
                 [parsedId]
             );
             if (result.affectedRows === 0) {
-                logger.warn(`Permission not found or already deleted for id: ${parsedId}`);
-                throw new Error('Permission not found or already deleted');
+                throw new Error(`Permission not found or already deleted for id: ${parsedId}`);
             }
             const [verifyRows] = await connection.query(
                 'SELECT deleted_at FROM permissions WHERE id = ?',
                 [parsedId]
             );
             if (verifyRows.length === 0 || !verifyRows[0].deleted_at) {
-                logger.error(`Verification failed: Permission with id ${parsedId} was not updated`);
-                throw new Error('Failed to verify soft delete');
+                throw new Error(`Failed to verify soft delete, Verification failed: Permission with id ${parsedId} was not updated`);
             }
             await connection.commit();
-            logger.info(`Successfully soft deleted permission with id: ${parsedId}`, { deleted_at: verifyRows[0].deleted_at });
             return { message: 'Permission soft deleted successfully', deleted_at: verifyRows[0].deleted_at };
         } catch (error) {
             if (connection) await connection.rollback();
-            logger.error(`Failed to delete permission with id: ${id}`, { error: error.message });
-            throw new Error(`Failed to delete permission: ${error.message}`);
+            throw new Error(`Failed to delete permission with id: ${id}`, { error: error.message });
         } finally {
             if (connection) connection.release();
         }
@@ -149,10 +123,8 @@ class PermissionsRepository {
             const parsedRoleId = parseInt(roleId, 10);
             const parsedPermissionId = parseInt(permissionId, 10);
             if (isNaN(parsedRoleId) || parsedRoleId <= 0 || isNaN(parsedPermissionId) || parsedPermissionId <= 0) {
-                logger.warn(`Invalid role ID or permission ID provided: ${roleId}, ${permissionId}`);
-                throw new Error('Invalid role ID or permission ID');
+                throw new Error(`Invalid role ID or permission ID provided: ${roleId}, ${permissionId}`);
             }
-            logger.debug(`Assigning permission ${parsedPermissionId} to role ${parsedRoleId}`);
             connection = await pool.getConnection();
             await connection.beginTransaction();
             const [result] = await connection.query(
@@ -160,20 +132,16 @@ class PermissionsRepository {
                 [parsedRoleId, parsedPermissionId]
             );
             await connection.commit();
-            logger.info(`Successfully assigned permission ${parsedPermissionId} to role ${parsedRoleId}`, { assignmentId: result.insertId });
             return { id: result.insertId, role_id: parsedRoleId, permission_id: parsedPermissionId };
         } catch (error) {
             if (connection) await connection.rollback();
             if (error.code === 'ER_DUP_ENTRY') {
-                logger.warn(`Permission ${permissionId} already assigned to role ${roleId}`);
-                throw new Error('Permission already assigned to role');
+                throw new Error(`Permission ${permissionId} already assigned to role ${roleId}`);
             }
             if (error.code === 'ER_NO_REFERENCED_ROW_2') {
-                logger.warn(`Role ${roleId} or permission ${permissionId} does not exist`);
-                throw new Error('Role or permission does not exist');
+                throw new Error(`Role ${roleId} or permission ${permissionId} does not exist`);
             }
-            logger.error(`Failed to assign permission to role ${roleId}`, { error: error.message });
-            throw new Error(`Failed to assign permission: ${error.message}`);
+            throw new Error(`Failed to assign permission to role ${roleId}`, { error: error.message });
         } finally {
             if (connection) connection.release();
         }
@@ -185,10 +153,8 @@ class PermissionsRepository {
             const parsedRoleId = parseInt(roleId, 10);
             const parsedPermissionId = parseInt(permissionId, 10);
             if (isNaN(parsedRoleId) || parsedRoleId <= 0 || isNaN(parsedPermissionId) || parsedPermissionId <= 0) {
-                logger.warn(`Invalid role ID or permission ID provided: ${roleId}, ${permissionId}`);
-                throw new Error('Invalid role ID or permission ID');
+                throw new Error(`Invalid role ID or permission ID provided: ${roleId}, ${permissionId}`);
             }
-            logger.debug(`Unassigning permission ${parsedPermissionId} from role ${parsedRoleId}`);
             connection = await pool.getConnection();
             await connection.beginTransaction();
             const [result] = await connection.query(
@@ -196,16 +162,13 @@ class PermissionsRepository {
                 [parsedRoleId, parsedPermissionId]
             );
             if (result.affectedRows === 0) {
-                logger.warn(`No active assignment found for role ${parsedRoleId} and permission ${parsedPermissionId}`);
-                throw new Error('No active assignment found');
+                throw new Error(`No active assignment found for role ${parsedRoleId} and permission ${parsedPermissionId}`);
             }
             await connection.commit();
-            logger.info(`Successfully unassigned permission ${parsedPermissionId} from role ${parsedRoleId}`);
             return { message: 'Permission unassigned successfully', role_id: parsedRoleId, permission_id: parsedPermissionId };
         } catch (error) {
             if (connection) await connection.rollback();
-            logger.error(`Failed to unassign permission from role ${roleId}`, { error: error.message });
-            throw new Error(`Failed to unassign permission: ${error.message}`);
+            throw new Error(`Failed to unassign permission from role ${roleId}`, { error: error.message });
         } finally {
             if (connection) connection.release();
         }

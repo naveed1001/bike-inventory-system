@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const rolesController = require('./rolesController');
+const router = express.Router();
+// const rolesController = require('./rolesController');
 
 router.get('/get-roles/', rolesController.getAllRoles);
 router.get('/get-role/:id', rolesController.getRoleById);

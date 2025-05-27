@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const errorHandler = require('./middlewares/errorHandler');
-const { router: rolesRouter } = require('./roles');
+const allRouter = require('./modules');
 const logger = require('./config/logger');
 
 dotenv.config();
@@ -11,7 +11,7 @@ app.use(express.json());
 
 //hello
 
-app.use('/api/roles', rolesRouter);
+app.use('/api', allRouter);
 
 app.use(errorHandler);
 

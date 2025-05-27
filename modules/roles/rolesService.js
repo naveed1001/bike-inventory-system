@@ -1,5 +1,5 @@
 const { validateCreateRole, validateUpdateRole } = require('./rolesValidator');
-const { ApiError, ApiResponse } = require('../utils');
+const { ApiError, ApiResponse } = require('../../middlewares/utils');
 const RolesRepository = require('./rolesRepository');
 const { StatusCodes } = require("http-status-codes");
 

@@ -48,3 +48,20 @@ app.listen(PORT, () => {
 
 // console.log('New JWT Token:', token);
 // console.log('Decoded Token:', jwt.decode(token));
+
+
+// For status
+
+// const jwt = require('jsonwebtoken');
+// require('dotenv').config();
+
+// const payload = {
+//     id: 1,
+//     permissions: ['status_read', 'status_create', 'status_update', 'status_delete']
+// };
+// console.log('System Time During Generation:', new Date().toISOString());
+// console.log('JWT_SECRET:', process.env.JWT_SECRET);
+// const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+// console.log('New JWT Token:', token);
+// console.log('Decoded Token:', jwt.decode(token));

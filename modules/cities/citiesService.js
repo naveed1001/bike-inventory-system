@@ -99,6 +99,4 @@ class CitiesService {
     }
 }
 
-console.log('CitiesRepository:', CitiesRepository);
-
 module.exports = new CitiesService();

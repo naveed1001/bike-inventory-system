@@ -18,6 +18,9 @@ app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);
 });
 
+
+// For Countries
+
 // const jwt = require('jsonwebtoken');
 // require('dotenv').config();
 
@@ -29,16 +32,19 @@ app.listen(PORT, () => {
 
 // console.log('New JWT Token:', token);
 
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
-const payload = {
-    id: 1,
-    permissions: ['cities_read', 'cities_create', 'cities_update', 'cities_delete']
-};
-console.log('System Time During Generation:', new Date().toISOString());
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
-const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+// For Cities
 
-console.log('New JWT Token:', token);
-console.log('Decoded Token:', jwt.decode(token));
+// const jwt = require('jsonwebtoken');
+// require('dotenv').config();
+
+// const payload = {
+//     id: 1,
+//     permissions: ['cities_read', 'cities_create', 'cities_update', 'cities_delete']
+// };
+// console.log('System Time During Generation:', new Date().toISOString());
+// console.log('JWT_SECRET:', process.env.JWT_SECRET);
+// const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+// console.log('New JWT Token:', token);
+// console.log('Decoded Token:', jwt.decode(token));

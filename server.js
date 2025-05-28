@@ -18,13 +18,33 @@ app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);
 });
 
+
+// For Countries
+
 // const jwt = require('jsonwebtoken');
-// require('dotenv').config(); // Load .env
+// require('dotenv').config();
 
 // const payload = {
 //     id: 1,
-//     permissions: ['banking_details_read', 'banking_details_create', 'banking_details_update', 'banking_details_delete']
+//     permissions: ['countries_read', 'countries_create', 'countries_update', 'countries_delete']
 // };
-// const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+// const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
 // console.log('New JWT Token:', token);
+
+
+// For Cities
+
+// const jwt = require('jsonwebtoken');
+// require('dotenv').config();
+
+// const payload = {
+//     id: 1,
+//     permissions: ['cities_read', 'cities_create', 'cities_update', 'cities_delete']
+// };
+// console.log('System Time During Generation:', new Date().toISOString());
+// console.log('JWT_SECRET:', process.env.JWT_SECRET);
+// const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+// console.log('New JWT Token:', token);
+// console.log('Decoded Token:', jwt.decode(token));

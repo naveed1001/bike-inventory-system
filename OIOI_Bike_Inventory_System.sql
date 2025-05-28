@@ -13,15 +13,8 @@ CREATE TABLE roles (
 );
 
 SELECT * FROM roles;
-SELECT * FROM permissions;
-SELECT * FROM role_permissions;
-SELECT * FROM banking_details;
-
--- Commands Commented For later use if required
 -- DROP TABLE roles;
--- DROP TABLE permissions;
--- DROP TABLE role_permissions;
-DROP TABLE banking_details;
+
 
 CREATE TABLE permissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -32,6 +25,11 @@ CREATE TABLE permissions (
     deleted_at DATETIME,
     UNIQUE (permission_key)
 );
+
+-- DROP TABLE permissions;
+SELECT * FROM permissions;
+
+
 
 CREATE TABLE role_permissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -45,6 +43,8 @@ CREATE TABLE role_permissions (
     FOREIGN KEY (permission_id) REFERENCES permissions(id) ON UPDATE CASCADE
 );
 
+SELECT * FROM role_permissions;
+-- DROP TABLE role_permissions;
 
 -- I. System Administration & Configuration Permissions
 INSERT INTO permissions (permission_name, permission_key) VALUES
@@ -186,3 +186,33 @@ CREATE TABLE banking_details (
     UNIQUE (account_number),
     UNIQUE (iban)
 );
+
+SELECT * FROM banking_details;
+-- DROP TABLE banking_details;
+
+-- 5. Countries
+CREATE TABLE countries (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    UNIQUE (name)
+);
+
+SELECT * FROM countries;
+-- DROP TABLE countries;
+
+
+-- 6. Cities
+CREATE TABLE cities (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    UNIQUE (name)
+);
+
+SELECT * FROM cities;
+-- DROP TABLE cities;

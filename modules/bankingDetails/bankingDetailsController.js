@@ -1,4 +1,4 @@
-const asyncHandler = require("../../middlewares/utils/asyncHandler");
+const asyncHandler = require("../../utils/asyncHandler");
 const BankingDetailsService = require('./bankingDetailsService');
 
 exports.getAllBankingDetails = asyncHandler(async (req, res) => {

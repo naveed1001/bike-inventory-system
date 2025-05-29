@@ -1,5 +1,5 @@
 const { validateCreateCity, validateUpdateCity } = require('./citiesValidator');
-const { ApiError, ApiResponse } = require('../../middlewares/utils');
+const { ApiError, ApiResponse } = require('../../utils');
 const CitiesRepository = require('./citiesRepository');
 const { StatusCodes } = require('http-status-codes');
 

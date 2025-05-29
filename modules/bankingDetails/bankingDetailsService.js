@@ -1,5 +1,5 @@
 const { validateCreateBankingDetail, validateUpdateBankingDetail } = require('./bankingDetailsValidator');
-const { ApiError, ApiResponse } = require('../../middlewares/utils');
+const { ApiError, ApiResponse } = require('../../utils');
 const BankingDetailsRepository = require('./bankingDetailsRepository');
 const { StatusCodes } = require("http-status-codes");
 

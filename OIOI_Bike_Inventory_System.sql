@@ -230,3 +230,37 @@ CREATE TABLE status (
 
 SELECT * FROM status;
 -- DROP TABLE status;
+
+
+-- 8. Brand
+CREATE TABLE brand (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    logo VARCHAR(1024),
+    website VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    UNIQUE (name)
+);
+
+SELECT * FROM brand;
+-- DROP TABLE brand;
+
+-- 9. Vendor
+CREATE TABLE vendor (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+	phone VARCHAR(20) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+    banking_id BIGINT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    FOREIGN KEY (banking_id) REFERENCES banking_details(id) ON UPDATE CASCADE,
+    UNIQUE (email)
+);
+
+SELECT * FROM vendor;
+-- DROP TABLE vendor;

@@ -1,5 +1,5 @@
 const PermissionsService = require('./permissionsService');
-const asyncHandler = require("../../middlewares/utils/asyncHandler");
+const asyncHandler = require("../../utils/asyncHandler");
 
 exports.getAllPermissions = asyncHandler(async (req, res) => {
     const response = await PermissionsService.getAllPermissions();

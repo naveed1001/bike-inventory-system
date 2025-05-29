@@ -7,6 +7,7 @@ const bankingDetails = require('./bankingDetails');
 const countries = require('./countries');
 const cities = require('./cities');
 const status = require('./status');
+const brand = require('./brand');
 
 router.use('/roles', roles.router);
 router.use('/permissions', permissions.router);
@@ -14,5 +15,6 @@ router.use('/banking-details', bankingDetails.bankingDetailsRouter);
 router.use('/countries', countries.countriesRouter);
 router.use('/cities', cities.citiesRouter);
 router.use('/status', status.statusRouter);
+router.use('/brand', brand.brandRouter);
 
 module.exports = router;

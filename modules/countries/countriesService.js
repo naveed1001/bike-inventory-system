@@ -1,5 +1,5 @@
 const { validateCreateCountry, validateUpdateCountry } = require('./countriesValidator');
-const { ApiError, ApiResponse } = require('../../middlewares/utils');
+const { ApiError, ApiResponse } = require('../../utils');
 const CountriesRepository = require('./countriesRepository');
 const { StatusCodes } = require("http-status-codes");
 

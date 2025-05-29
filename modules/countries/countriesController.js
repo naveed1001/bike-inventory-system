@@ -1,4 +1,4 @@
-const asyncHandler = require("../../middlewares/utils/asyncHandler");
+const asyncHandler = require("../../utils/asyncHandler");
 const CountriesService = require('./countriesService');
 
 exports.getAllCountries = asyncHandler(async (req, res) => {

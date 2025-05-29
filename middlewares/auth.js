@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const ApiError = require('../middlewares/utils/ApiError');
 
 const authenticate = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];

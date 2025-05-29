@@ -1,5 +1,5 @@
 const { validateCreateStatus, validateUpdateStatus } = require('./statusValidator');
-const { ApiError, ApiResponse } = require('../../middlewares/utils');
+const { ApiError, ApiResponse } = require('../../utils');
 const StatusRepository = require('./statusRepository');
 const { StatusCodes } = require('http-status-codes');
 

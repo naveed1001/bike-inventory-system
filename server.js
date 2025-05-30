@@ -36,49 +36,53 @@ app.listen(PORT, () => {
 // For Cities
 
 // const jwt = require('jsonwebtoken');
-// require('dotenv').config();
 
 // const payload = {
 //     id: 1,
 //     permissions: ['cities_read', 'cities_create', 'cities_update', 'cities_delete']
 // };
-// console.log('System Time During Generation:', new Date().toISOString());
-// console.log('JWT_SECRET:', process.env.JWT_SECRET);
 // const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
 // console.log('New JWT Token:', token);
-// console.log('Decoded Token:', jwt.decode(token));
 
 
 // For status
 
 // const jwt = require('jsonwebtoken');
-// require('dotenv').config();
 
 // const payload = {
 //     id: 1,
 //     permissions: ['status_read', 'status_create', 'status_update', 'status_delete']
 // };
-// console.log('System Time During Generation:', new Date().toISOString());
-// console.log('JWT_SECRET:', process.env.JWT_SECRET);
 // const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
 // console.log('New JWT Token:', token);
-// console.log('Decoded Token:', jwt.decode(token));
 
 
 // For Brands
 
 // const jwt = require('jsonwebtoken');
-// require('dotenv').config();
 
 // const payload = {
 //     id: 1,
 //     permissions: ['brand_read', 'brand_create', 'brand_update', 'brand_delete']
 // };
-// console.log('System Time During Generation:', new Date().toISOString());
-// console.log('JWT_SECRET:', process.env.JWT_SECRET);
 // const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
 // console.log('New JWT Token:', token);
-// console.log('Decoded Token:', jwt.decode(token));
+
+
+// For Vendor
+
+// const jwt = require('jsonwebtoken');
+
+// const payload = {
+//     id: 1,
+//     permissions: ['vendor_read', 'vendor_create', 'vendor_update', 'vendor_delete']
+// };
+// const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+// console.log('New JWT Token:', token);
+
+// const bcrypt = require('bcrypt');
+// bcrypt.hash('SuperAdmin123', 10).then(hash => console.log(hash));

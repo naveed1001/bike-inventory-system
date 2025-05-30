@@ -8,6 +8,8 @@ const countries = require('./countries');
 const cities = require('./cities');
 const status = require('./status');
 const brand = require('./brand');
+const vendor = require('./vendor');
+const users = require('./users');
 
 router.use('/roles', roles.router);
 router.use('/permissions', permissions.router);
@@ -16,5 +18,7 @@ router.use('/countries', countries.countriesRouter);
 router.use('/cities', cities.citiesRouter);
 router.use('/status', status.statusRouter);
 router.use('/brand', brand.brandRouter);
+router.use('/vendor', vendor.vendorRouter);
+router.use('/users', users.usersRouter);
 
 module.exports = router;

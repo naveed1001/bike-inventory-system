@@ -2,21 +2,15 @@ const pool = require('../../config/database');
 
 const createCity = async (name) => {
     const connection = await pool.getConnection();
-    try {
-        await connection.beginTransaction();
-        const [result] = await connection.execute('INSERT INTO cities (name) VALUES (?)', [name]);
-        const [city] = await connection.execute(
-            'SELECT id, name, created_at, updated_at, deleted_at FROM cities WHERE id = ?',
-            [result.insertId]
-        );
-        await connection.commit();
-        return city[0];
-    } catch (error) {
-        await connection.rollback();
-        throw error;
-    } finally {
-        connection.release();
-    }
+    await connection.beginTransaction();
+    const [result] = await connection.execute('INSERT INTO cities (name) VALUES (?)', [name]);
+    const [city] = await connection.execute(
+        'SELECT id, name, created_at, updated_at, deleted_at FROM cities WHERE id = ?',
+        [result.insertId]
+    );
+    await connection.commit();
+    connection.release();
+    return city[0];
 };
 
 const findAllCities = async () => {
@@ -36,46 +30,34 @@ const findCityById = async (id) => {
 
 const updateCity = async (id, name) => {
     const connection = await pool.getConnection();
-    try {
-        await connection.beginTransaction();
-        const [existing] = await connection.execute(
-            'SELECT id FROM cities WHERE id = ? AND deleted_at IS NULL',
-            [id]
-        );
-        if (!existing.length) throw new Error('Not found');
-        await connection.execute('UPDATE cities SET name = ? WHERE id = ?', [name, id]);
-        const [updatedCity] = await connection.execute(
-            'SELECT id, name, created_at, updated_at, deleted_at FROM cities WHERE id = ?',
-            [id]
-        );
-        await connection.commit();
-        return updatedCity[0];
-    } catch (error) {
-        await connection.rollback();
-        throw error;
-    } finally {
-        connection.release();
-    }
+    await connection.beginTransaction();
+    const [existing] = await connection.execute(
+        'SELECT id FROM cities WHERE id = ? AND deleted_at IS NULL',
+        [id]
+    );
+    if (!existing.length) throw new Error('Not found');
+    await connection.execute('UPDATE cities SET name = ? WHERE id = ?', [name, id]);
+    const [updatedCity] = await connection.execute(
+        'SELECT id, name, created_at, updated_at, deleted_at FROM cities WHERE id = ?',
+        [id]
+    );
+    await connection.commit();
+    connection.release();
+    return updatedCity[0];
 };
 
 const deleteCity = async (id) => {
     const connection = await pool.getConnection();
-    try {
-        await connection.beginTransaction();
-        const [existing] = await connection.execute(
-            'SELECT id FROM cities WHERE id = ? AND deleted_at IS NULL',
-            [id]
-        );
-        if (!existing.length) throw new Error('Not found');
-        await connection.execute('UPDATE cities SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [id]);
-        await connection.commit();
-        return true;
-    } catch (error) {
-        await connection.rollback();
-        throw error;
-    } finally {
-        connection.release();
-    }
+    await connection.beginTransaction();
+    const [existing] = await connection.execute(
+        'SELECT id FROM cities WHERE id = ? AND deleted_at IS NULL',
+        [id]
+    );
+    if (!existing.length) throw new Error('Not found');
+    await connection.execute('UPDATE cities SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [id]);
+    await connection.commit();
+    connection.release();
+    return true;
 };
 
 module.exports = { createCity, findAllCities, findCityById, updateCity, deleteCity };

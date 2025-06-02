@@ -65,3 +65,14 @@ exports.deleteUser = asyncHandler(async (req, res) => {
     const response = await UsersService.deleteUser(req.params.id);
     res.status(response.code).json(response);
 });
+
+
+exports.resetUserPassword = asyncHandler(async (req, res) => {
+    const response = await UsersService.resetUserPassword(req.params.id, req.body.newPassword);
+    res.status(response.code).json(response);
+});
+
+exports.searchUserByUsername = asyncHandler(async (req, res) => {
+    const response = await UsersService.searchUserByUsername(req.query.username);
+    res.status(response.code).json(response);
+});

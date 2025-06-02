@@ -21,7 +21,7 @@ const sanitizeFileName = (name) => {
 // Brand logo storage configuration
 const brandStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../../uploads/brands');
+        const uploadPath = path.join(__dirname, '../uploads/brands');
         ensureDirectoryExists(uploadPath);
         cb(null, uploadPath);
     },
@@ -35,7 +35,7 @@ const brandStorage = multer.diskStorage({
 // User profile image storage configuration
 const userStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../../uploads/users');
+        const uploadPath = path.join(__dirname, '../uploads/users');
         ensureDirectoryExists(uploadPath);
         cb(null, uploadPath);
     },
@@ -43,6 +43,20 @@ const userStorage = multer.diskStorage({
         const username = req.body.username ? sanitizeFileName(req.body.username) : 'unknown';
         const uniqueSuffix = Date.now() + '-' + file.originalname;
         cb(null, `user-${username}-${uniqueSuffix}`);
+    },
+});
+
+// Organization logo storage configuration
+const organizationStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../uploads/organizations');
+        ensureDirectoryExists(uploadPath);
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const orgName = req.body.name ? sanitizeFileName(req.body.name) : 'unknown';
+        const uniqueSuffix = Date.now() + '-' + file.originalname;
+        cb(null, `organization-${orgName}-${uniqueSuffix}`);
     },
 });
 
@@ -111,4 +125,31 @@ const uploadUserProfileImage = (req, res, next) => {
     });
 };
 
-module.exports = { uploadBrandLogo, uploadUserProfileImage };
+// Multer instance for organization logo uploads (single file only)
+const uploadOrganizationLogo = (req, res, next) => {
+    const multerSingle = multer({
+        storage: organizationStorage,
+        limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+        fileFilter: fileFilter,
+    }).single('logo');
+
+    multerSingle(req, res, (err) => {
+        if (err instanceof multer.MulterError && err.code === 'LIMIT_UNEXPECTED_FILE') {
+            return res.status(400).json({
+                status: 'error',
+                code: 400,
+                message: 'Only one logo file is allowed',
+            });
+        }
+        if (err) {
+            return res.status(400).json({
+                status: 'error',
+                code: 400,
+                message: err.message || 'File upload error',
+            });
+        }
+        next();
+    });
+};
+
+module.exports = { uploadBrandLogo, uploadUserProfileImage, uploadOrganizationLogo };

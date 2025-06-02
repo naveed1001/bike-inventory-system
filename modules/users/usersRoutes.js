@@ -18,5 +18,7 @@ router.get('/get-user/:id', authenticate, superAdminBypass, authorize('users_rea
 router.post('/create-user', authenticate, superAdminBypass, authorize('users_create'), usersController.createUser);
 router.put('/update-user/:id', authenticate, superAdminBypass, authorize('users_update'), usersController.updateUser);
 router.delete('/delete-user/:id', authenticate, superAdminBypass, authorize('users_delete'), usersController.deleteUser);
+router.put('/reset-password/:id', authenticate, superAdminBypass, authorize('users_reset_password'), usersController.resetUserPassword);
+router.get('/search-users', authenticate, superAdminBypass, authorize('users_search'), usersController.searchUserByUsername);
 
 module.exports = router;

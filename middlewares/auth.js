@@ -22,6 +22,17 @@ const authorize = (requiredPermission) => (req, res, next) => {
 };
 
 
+// const getPermissionsByRoleId = async (roleId) => {
+//     const [permissionsRows] = await pool.execute(
+//         `SELECT p.permission_key 
+//          FROM role_permissions rp 
+//          JOIN permissions p ON rp.permission_id = p.id 
+//          WHERE rp.role_id = ? AND rp.deleted_at IS NULL AND p.deleted_at IS NULL`,
+//         [roleId]
+//     );
+//     return permissionsRows.map(row => row.permission_key);
+// };
+
 // Fetch permissions based on role_id
 const getPermissionsByRoleId = async (roleId) => {
     const [roles] = await pool.execute('SELECT permissions FROM roles WHERE id = ? AND deleted_at IS NULL', [roleId]);

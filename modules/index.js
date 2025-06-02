@@ -11,6 +11,8 @@ const brand = require('./brand');
 const vendor = require('./vendor');
 const users = require('./users');
 const organization = require('./organization');
+const warehouse = require('./warehouse');
+const itemTypes = require('./itemTypes');
 
 router.use('/roles', roles.router);
 router.use('/permissions', permissions.router);
@@ -22,5 +24,7 @@ router.use('/brand', brand.brandRouter);
 router.use('/vendor', vendor.vendorRouter);
 router.use('/users', users.usersRouter);
 router.use('/organizations', organization.organizationRouter);
+router.use('/warehouses', warehouse.warehouseRouter);
+router.use('/item-types', itemTypes.itemTypesRouter);
 
 module.exports = router;

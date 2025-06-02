@@ -96,36 +96,37 @@ class UsersService {
         if (error) throw new ApiError(error.details[0].message, StatusCodes.BAD_REQUEST);
 
         const { username, password } = data;
-        const user = await UsersRepository.findUserByUsername(username);
-        if (!user) {
+        const user = await UsersRepository.findUserByUsername(username, true, true); // exactMatch: true, includePassword: true
+        if (!user || user.length === 0) {
             throw new ApiError('User not found', StatusCodes.NOT_FOUND);
         }
+        const foundUser = Array.isArray(user) ? user[0] : user; // Handle array result from search
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, foundUser.password);
         if (!isPasswordValid) {
             throw new ApiError('Invalid credentials', StatusCodes.UNAUTHORIZED);
         }
 
         const [permissionsRows] = await pool.execute(
             `SELECT p.permission_key 
-             FROM role_permissions rp 
-             JOIN permissions p ON rp.permission_id = p.id 
-             WHERE rp.role_id = ? AND rp.deleted_at IS NULL AND p.deleted_at IS NULL`,
-            [user.role_id]
+         FROM role_permissions rp 
+         JOIN permissions p ON rp.permission_id = p.id 
+         WHERE rp.role_id = ? AND rp.deleted_at IS NULL AND p.deleted_at IS NULL`,
+            [foundUser.role_id]
         );
         const permissions = permissionsRows.map(row => row.permission_key);
 
         if (permissions.length === 0) {
-            console.log('Warning: No permissions fetched for role_id', user.role_id);
+            console.log('Warning: No permissions fetched for role_id', foundUser.role_id);
         }
 
         const token = jwt.sign(
-            { id: user.id, role_id: user.role_id, permissions },
+            { id: foundUser.id, role_id: foundUser.role_id, permissions },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
-        const updatedUser = await UsersRepository.updateLastLogin(user.id);
+        const updatedUser = await UsersRepository.updateLastLogin(foundUser.id);
 
         return new ApiResponse({
             code: StatusCodes.OK,
@@ -156,6 +157,40 @@ class UsersService {
             code: StatusCodes.OK,
             message: 'User soft deleted successfully',
             payload: { message: 'User soft deleted successfully' }
+        });
+    }
+
+    async resetUserPassword(id, newPassword) {
+        const parsedId = parseInt(id, 10);
+        if (isNaN(parsedId) || parsedId <= 0) {
+            throw new ApiError('Invalid user ID', StatusCodes.BAD_REQUEST);
+        }
+        if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 8) {
+            throw new ApiError('New password must be at least 8 characters long', StatusCodes.BAD_REQUEST);
+        }
+        const user = await UsersRepository.updateUserPassword(parsedId, newPassword);
+        if (!user) {
+            throw new ApiError('User not found', StatusCodes.NOT_FOUND);
+        }
+        return new ApiResponse({
+            code: StatusCodes.OK,
+            message: 'Password reset successfully',
+            payload: { id: user.id, username: user.username }
+        });
+    }
+
+    async searchUserByUsername(username) {
+        if (!username || typeof username !== 'string' || username.trim().length === 0) {
+            throw new ApiError('Username is required and must be a non-empty string', StatusCodes.BAD_REQUEST);
+        }
+        const users = await UsersRepository.findUserByUsername(username.trim(), false, false); // exactMatch: false, includePassword: false
+        if (users.length === 0) {
+            throw new ApiError('No users found with the provided username', StatusCodes.NOT_FOUND);
+        }
+        return new ApiResponse({
+            code: StatusCodes.OK,
+            message: 'Users retrieved successfully',
+            payload: { users }
         });
     }
 }

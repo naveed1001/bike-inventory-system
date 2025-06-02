@@ -10,6 +10,7 @@ const status = require('./status');
 const brand = require('./brand');
 const vendor = require('./vendor');
 const users = require('./users');
+const organization = require('./organization');
 
 router.use('/roles', roles.router);
 router.use('/permissions', permissions.router);
@@ -20,5 +21,6 @@ router.use('/status', status.statusRouter);
 router.use('/brand', brand.brandRouter);
 router.use('/vendor', vendor.vendorRouter);
 router.use('/users', users.usersRouter);
+router.use('/organizations', organization.organizationRouter);
 
 module.exports = router;

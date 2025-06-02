@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const createUser = async (username, email, phone, address, profileImage, password, roleId, employedAt, bankingId) => {
     const connection = await pool.getConnection();
-    
+
     await connection.beginTransaction();
     const [roleCheck] = await connection.execute(
         'SELECT id FROM roles WHERE id = ? AND deleted_at IS NULL',
@@ -28,7 +28,7 @@ const createUser = async (username, email, phone, address, profileImage, passwor
         [result.insertId]
     );
     await connection.commit();
-    
+
     connection.release();
     return user[0];
 };
@@ -46,17 +46,9 @@ const findUserById = async (id) => {
     return users[0] || null;
 };
 
-const findUserByUsername = async (username) => {
-    const [users] = await pool.execute(
-        'SELECT id, username, email, phone, address, profile_image, password, role_id, employed_at, banking_id, last_login, created_at, updated_at, deleted_at FROM users WHERE username = ? AND deleted_at IS NULL',
-        [username]
-    );
-    return users[0] || null;
-};
-
 const updateUser = async (id, username, email, phone, address, profileImage, password, roleId, employedAt, bankingId) => {
     const connection = await pool.getConnection();
-    
+
     await connection.beginTransaction();
     const [existing] = await connection.execute(
         'SELECT id FROM users WHERE id = ? AND deleted_at IS NULL',
@@ -86,14 +78,14 @@ const updateUser = async (id, username, email, phone, address, profileImage, pas
         [id]
     );
     await connection.commit();
-    
+
     connection.release();
     return updatedUser[0];
 };
 
 const updateLastLogin = async (id) => {
     const connection = await pool.getConnection();
-    
+
     await connection.beginTransaction();
     const [existing] = await connection.execute(
         'SELECT id FROM users WHERE id = ? AND deleted_at IS NULL',
@@ -109,14 +101,14 @@ const updateLastLogin = async (id) => {
         [id]
     );
     await connection.commit();
-    
+
     connection.release();
     return updatedUser[0];
 };
 
 const deleteUser = async (id) => {
     const connection = await pool.getConnection();
-    
+
     await connection.beginTransaction();
     const [existing] = await connection.execute(
         'SELECT id FROM users WHERE id = ? AND deleted_at IS NULL',
@@ -125,9 +117,43 @@ const deleteUser = async (id) => {
     if (!existing.length) throw new Error('Not found');
     await connection.execute('UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [id]);
     await connection.commit();
-    
+
     connection.release();
     return true;
 };
 
-module.exports = { createUser, findAllUsers, findUserById, findUserByUsername, updateUser, updateLastLogin, deleteUser };
+const updateUserPassword = async (id, newPassword) => {
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const [existing] = await connection.execute(
+        'SELECT id FROM users WHERE id = ? AND deleted_at IS NULL',
+        [id]
+    );
+    if (!existing.length) throw new Error('Not found');
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await connection.execute(
+        'UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        [hashedPassword, id]
+    );
+    const [updatedUser] = await connection.execute(
+        'SELECT id, username, email, phone, address, profile_image, role_id, employed_at, banking_id, last_login, created_at, updated_at, deleted_at FROM users WHERE id = ?',
+        [id]
+    );
+    await connection.commit();
+    connection.release();
+    return updatedUser[0];
+};
+
+const findUserByUsername = async (username, exactMatch = false, includePassword = false) => {
+    const fields = includePassword
+        ? 'id, username, email, phone, address, profile_image, password, role_id, employed_at, banking_id, last_login, created_at, updated_at, deleted_at'
+        : 'id, username, email, phone, address, profile_image, role_id, employed_at, banking_id, last_login, created_at, updated_at, deleted_at';
+    const query = exactMatch
+        ? `SELECT ${fields} FROM users WHERE username = ? AND deleted_at IS NULL`
+        : `SELECT ${fields} FROM users WHERE username LIKE ? AND deleted_at IS NULL`;
+    const searchPattern = exactMatch ? username : `%${username}%`;
+    const [users] = await pool.execute(query, [searchPattern]);
+    return users;
+};
+
+module.exports = { createUser, findAllUsers, findUserById, findUserByUsername, updateUser, updateLastLogin, deleteUser, updateUserPassword };

@@ -13,6 +13,11 @@ const users = require('./users');
 const organization = require('./organization');
 const warehouse = require('./warehouse');
 const itemTypes = require('./itemTypes');
+const capacityTypes = require('./capacityTypes');
+const item = require('./item');
+const specifications = require('./specifications');
+const payment = require('./payment');
+
 
 router.use('/roles', roles.router);
 router.use('/permissions', permissions.router);
@@ -26,5 +31,9 @@ router.use('/users', users.usersRouter);
 router.use('/organizations', organization.organizationRouter);
 router.use('/warehouses', warehouse.warehouseRouter);
 router.use('/item-types', itemTypes.itemTypesRouter);
+router.use('/capacity-types', capacityTypes.capacityTypesRouter);
+router.use('/items', item.itemRouter);
+router.use('/specifications', specifications.specificationsRouter);
+router.use('/payments', payment.paymentRouter);
 
 module.exports = router;

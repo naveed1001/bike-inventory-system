@@ -9,4 +9,4 @@ router.post('/create-item', authenticate, authorize('item_create'), itemControll
 router.put('/update-item/:id', authenticate, authorize('item_update'), itemController.updateItem);
 router.delete('/delete-item/:id', authenticate, authorize('item_delete'), itemController.deleteItem);
 
-module.exports = router;
+module.exports = router; 

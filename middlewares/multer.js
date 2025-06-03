@@ -2,7 +2,6 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure upload directories exist
 const ensureDirectoryExists = (directory) => {
     if (!fs.existsSync(directory)) {
         fs.mkdirSync(directory, { recursive: true });
@@ -13,9 +12,9 @@ const ensureDirectoryExists = (directory) => {
 const sanitizeFileName = (name) => {
     return name
         .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-') // Replace non-alphanumeric characters with hyphens
-        .replace(/-+/g, '-') // Replace multiple hyphens with a single hyphen
-        .replace(/(^-|-$)/g, ''); // Remove leading/trailing hyphens
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/(^-|-$)/g, '');
 };
 
 // Brand logo storage configuration
@@ -57,6 +56,20 @@ const organizationStorage = multer.diskStorage({
         const orgName = req.body.name ? sanitizeFileName(req.body.name) : 'unknown';
         const uniqueSuffix = Date.now() + '-' + file.originalname;
         cb(null, `organization-${orgName}-${uniqueSuffix}`);
+    },
+});
+
+// Instrument picture storage configuration
+const instrumentStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../uploads/instruments');
+        ensureDirectoryExists(uploadPath);
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const instrumentNumber = req.body.number ? sanitizeFileName(req.body.number) : 'unknown';
+        const uniqueSuffix = Date.now() + '-' + file.originalname;
+        cb(null, `instrument-${instrumentNumber}-${uniqueSuffix}`);
     },
 });
 
@@ -152,4 +165,32 @@ const uploadOrganizationLogo = (req, res, next) => {
     });
 };
 
-module.exports = { uploadBrandLogo, uploadUserProfileImage, uploadOrganizationLogo };
+
+// Multer instance for instrument picture uploads (single file only)
+const uploadInstrumentPicture = (req, res, next) => {
+    const multerSingle = multer({
+        storage: instrumentStorage,
+        limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+        fileFilter: fileFilter,
+    }).single('picture');
+
+    multerSingle(req, res, (err) => {
+        if (err instanceof multer.MulterError && err.code === 'LIMIT_UNEXPECTED_FILE') {
+            return res.status(400).json({
+                status: 'error',
+                code: 400,
+                message: 'Only one picture file is allowed',
+            });
+        }
+        if (err) {
+            return res.status(400).json({
+                status: 'error',
+                code: 400,
+                message: err.message || 'File upload error',
+            });
+        }
+        next();
+    });
+};
+
+module.exports = { uploadBrandLogo, uploadUserProfileImage, uploadOrganizationLogo, uploadInstrumentPicture };

@@ -21,6 +21,7 @@ const installmentPlan = require('./InstallmentPlan');
 const instruments = require('./instruments');
 const installment = require('./installment');
 const paymentDetail = require('./paymentDetails');
+const dealer = require('./dealer');
 
 
 router.use('/roles', roles.router);
@@ -43,6 +44,7 @@ router.use('/installment-plans', installmentPlan.installmentPlanRouter);
 router.use('/instruments', instruments.instrumentsRouter);
 router.use('/installments', installment.installmentRouter);
 router.use('/payment-details', paymentDetail.paymentDetailRouter);
+router.use('/dealers', dealer.dealerRouter);
 
 
 module.exports = router;

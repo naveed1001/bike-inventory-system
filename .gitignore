@@ -4,10 +4,10 @@ node_modules/
 logs/
 test.js
 
-modules/payment
-
 modules/InstallmentPlan
 
 modules/instruments
 
 modules/installment
+
+modules/paymentDetails

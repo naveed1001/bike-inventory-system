@@ -14,12 +14,12 @@ const createItemSchema = Joi.object({
         }),
     brand_id: Joi.number()
         .integer()
-        .positive()
+        .min(1)
         .required()
         .messages({
             'number.base': 'Brand ID must be a number',
             'number.integer': 'Brand ID must be an integer',
-            'number.positive': 'Brand ID must be a positive number',
+            'number.min': 'Brand ID must be at least 1',
             'any.required': 'Brand ID is required',
         }),
     model_number: Joi.string()
@@ -32,11 +32,9 @@ const createItemSchema = Joi.object({
     identification_number: Joi.string()
         .trim()
         .max(50)
-        .required()
+        .allow(null)
         .messages({
-            'string.empty': 'Identification number is required',
             'string.max': 'Identification number must not exceed 50 characters',
-            'any.required': 'Identification number is required',
         }),
     color: Joi.string()
         .trim()
@@ -47,12 +45,12 @@ const createItemSchema = Joi.object({
         }),
     status_id: Joi.number()
         .integer()
-        .positive()
+        .min(1)
         .required()
         .messages({
             'number.base': 'Status ID must be a number',
             'number.integer': 'Status ID must be an integer',
-            'number.positive': 'Status ID must be a positive number',
+            'number.min': 'Status ID must be at least 1',
             'any.required': 'Status ID is required',
         }),
     arrival_date: Joi.date()
@@ -77,13 +75,11 @@ const createItemSchema = Joi.object({
     discount: Joi.number()
         .precision(2)
         .min(0)
-        .max(100)
         .allow(null)
         .messages({
             'number.base': 'Discount must be a number',
             'number.precision': 'Discount must have up to 2 decimal places',
             'number.min': 'Discount cannot be negative',
-            'number.max': 'Discount cannot exceed 100%',
         }),
     discount_coupon: Joi.string()
         .trim()
@@ -92,14 +88,21 @@ const createItemSchema = Joi.object({
         .messages({
             'string.max': 'Discount coupon must not exceed 50 characters',
         }),
+    sold_to: Joi.string()
+        .trim()
+        .max(100)
+        .allow(null)
+        .messages({
+            'string.max': 'Sold to must not exceed 100 characters',
+        }),
     organization_id: Joi.number()
         .integer()
-        .positive()
+        .min(1)
         .required()
         .messages({
             'number.base': 'Organization ID must be a number',
             'number.integer': 'Organization ID must be an integer',
-            'number.positive': 'Organization ID must be a positive number',
+            'number.min': 'Organization ID must be at least 1',
             'any.required': 'Organization ID is required',
         }),
 });
@@ -118,12 +121,12 @@ const updateItemSchema = Joi.object({
         }),
     brand_id: Joi.number()
         .integer()
-        .positive()
+        .min(1)
         .required()
         .messages({
             'number.base': 'Brand ID must be a number',
             'number.integer': 'Brand ID must be an integer',
-            'number.positive': 'Brand ID must be a positive number',
+            'number.min': 'Brand ID must be at least 1',
             'any.required': 'Brand ID is required',
         }),
     model_number: Joi.string()
@@ -136,11 +139,9 @@ const updateItemSchema = Joi.object({
     identification_number: Joi.string()
         .trim()
         .max(50)
-        .required()
+        .allow(null)
         .messages({
-            'string.empty': 'Identification number is required',
             'string.max': 'Identification number must not exceed 50 characters',
-            'any.required': 'Identification number is required',
         }),
     color: Joi.string()
         .trim()
@@ -151,12 +152,12 @@ const updateItemSchema = Joi.object({
         }),
     status_id: Joi.number()
         .integer()
-        .positive()
+        .min(1)
         .required()
         .messages({
             'number.base': 'Status ID must be a number',
             'number.integer': 'Status ID must be an integer',
-            'number.positive': 'Status ID must be a positive number',
+            'number.min': 'Status ID must be at least 1',
             'any.required': 'Status ID is required',
         }),
     arrival_date: Joi.date()
@@ -181,13 +182,11 @@ const updateItemSchema = Joi.object({
     discount: Joi.number()
         .precision(2)
         .min(0)
-        .max(100)
         .allow(null)
         .messages({
             'number.base': 'Discount must be a number',
             'number.precision': 'Discount must have up to 2 decimal places',
             'number.min': 'Discount cannot be negative',
-            'number.max': 'Discount cannot exceed 100%',
         }),
     discount_coupon: Joi.string()
         .trim()
@@ -196,14 +195,21 @@ const updateItemSchema = Joi.object({
         .messages({
             'string.max': 'Discount coupon must not exceed 50 characters',
         }),
+    sold_to: Joi.string()
+        .trim()
+        .max(100)
+        .allow(null)
+        .messages({
+            'string.max': 'Sold to must not exceed 100 characters',
+        }),
     organization_id: Joi.number()
         .integer()
-        .positive()
+        .min(1)
         .required()
         .messages({
             'number.base': 'Organization ID must be a number',
             'number.integer': 'Organization ID must be an integer',
-            'number.positive': 'Organization ID must be a positive number',
+            'number.min': 'Organization ID must be at least 1',
             'any.required': 'Organization ID is required',
         }),
 });

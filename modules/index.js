@@ -17,6 +17,9 @@ const capacityTypes = require('./capacityTypes');
 const item = require('./item');
 const specifications = require('./specifications');
 const payment = require('./payment');
+const installmentPlan = require('./InstallmentPlan');
+const instruments = require('./instruments');
+const installment = require('./installment');
 
 
 router.use('/roles', roles.router);
@@ -35,5 +38,9 @@ router.use('/capacity-types', capacityTypes.capacityTypesRouter);
 router.use('/items', item.itemRouter);
 router.use('/specifications', specifications.specificationsRouter);
 router.use('/payments', payment.paymentRouter);
+router.use('/installment-plans', installmentPlan.installmentPlanRouter);
+router.use('/instruments', instruments.instrumentsRouter);
+router.use('/installments', installment.installmentRouter);
+
 
 module.exports = router;

@@ -4,6 +4,10 @@ node_modules/
 logs/
 test.js
 
-modules/specifications
-
 modules/payment
+
+modules/InstallmentPlan
+
+modules/instruments
+
+modules/installment

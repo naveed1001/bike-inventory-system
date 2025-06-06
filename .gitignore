@@ -4,10 +4,6 @@ node_modules/
 logs/
 test.js
 
-modules/installment
-
-modules/paymentDetails
-
 modules/dealer
 
 modules/dealership

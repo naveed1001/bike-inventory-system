@@ -23,6 +23,7 @@ const installment = require('./installment');
 const paymentDetail = require('./paymentDetails');
 const dealer = require('./dealer');
 const dealership = require('./dealership');
+const customer = require('./customer');
 
 
 router.use('/roles', roles.router);
@@ -47,6 +48,7 @@ router.use('/installments', installment.installmentRouter);
 router.use('/payment-details', paymentDetail.paymentDetailRouter);
 router.use('/dealers', dealer.dealerRouter);
 router.use('/dealerships', dealership.dealershipRouter);
+router.use('/customers', customer.customerRouter);
 
 
 module.exports = router;

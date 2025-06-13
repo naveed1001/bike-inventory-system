@@ -4,6 +4,4 @@ node_modules/
 logs/
 test.js
 
-modules/dealer
-
-modules/dealership
+modules/customer

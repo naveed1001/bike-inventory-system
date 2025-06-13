@@ -24,6 +24,10 @@ const paymentDetail = require('./paymentDetails');
 const dealer = require('./dealer');
 const dealership = require('./dealership');
 const customer = require('./customer');
+const sales = require('./sales');
+const shippingAgent = require('./shipping_agent');
+const shipment = require('./shipment');
+const entityBanking = require('./entity_banking');
 
 
 router.use('/roles', roles.router);
@@ -49,6 +53,10 @@ router.use('/payment-details', paymentDetail.paymentDetailRouter);
 router.use('/dealers', dealer.dealerRouter);
 router.use('/dealerships', dealership.dealershipRouter);
 router.use('/customers', customer.customerRouter);
+router.use('/sales', sales.salesRouter);
+router.use('/shipping-agents', shippingAgent.shippingAgentRouter);
+router.use('/shipments', shipment.shipmentRouter);
+router.use('/entity-bankings', entityBanking.entityBankingRouter);
 
 
 module.exports = router;

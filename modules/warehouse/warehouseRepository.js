@@ -3,6 +3,15 @@ const pool = require('../../config/database');
 const createWarehouse = async (name, organizationId, address, area, location) => {
     const connection = await pool.getConnection();
     await connection.beginTransaction();
+
+    if (organizationId) {
+        const [organization] = await connection.execute(
+            'SELECT id FROM organization WHERE id = ? AND deleted_at IS NULL',
+            [organizationId]
+        );
+        if (!organization.length) throw new Error('Organization not found');
+    }
+
     const [result] = await connection.execute(
         'INSERT INTO warehouse (name, organization_id, address, area, location) VALUES (?, ?, ?, ?, ?)',
         [name, organizationId || null, address || null, area || null, location || null]
@@ -34,11 +43,21 @@ const findWarehouseById = async (id) => {
 const updateWarehouse = async (id, name, organizationId, address, area, location) => {
     const connection = await pool.getConnection();
     await connection.beginTransaction();
+
     const [existing] = await connection.execute(
         'SELECT id FROM warehouse WHERE id = ? AND deleted_at IS NULL',
         [id]
     );
     if (!existing.length) throw new Error('Not found');
+
+    if (organizationId) {
+        const [organization] = await connection.execute(
+            'SELECT id FROM organization WHERE id = ? AND deleted_at IS NULL',
+            [organizationId]
+        );
+        if (!organization.length) throw new Error('Organization not found');
+    }
+
     await connection.execute(
         'UPDATE warehouse SET name = ?, organization_id = ?, address = ?, area = ?, location = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
         [name, organizationId || null, address || null, area || null, location || null, id]
@@ -55,11 +74,13 @@ const updateWarehouse = async (id, name, organizationId, address, area, location
 const deleteWarehouse = async (id) => {
     const connection = await pool.getConnection();
     await connection.beginTransaction();
+
     const [existing] = await connection.execute(
         'SELECT id FROM warehouse WHERE id = ? AND deleted_at IS NULL',
         [id]
     );
     if (!existing.length) throw new Error('Not found');
+
     await connection.execute('UPDATE warehouse SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [id]);
     await connection.commit();
     connection.release();

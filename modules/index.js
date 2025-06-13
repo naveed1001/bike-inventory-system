@@ -28,6 +28,7 @@ const sales = require('./sales');
 const shippingAgent = require('./shipping_agent');
 const shipment = require('./shipment');
 const entityBanking = require('./entity_banking');
+const itemTransfers = require('./item_transfers');
 
 
 router.use('/roles', roles.router);
@@ -57,6 +58,7 @@ router.use('/sales', sales.salesRouter);
 router.use('/shipping-agents', shippingAgent.shippingAgentRouter);
 router.use('/shipments', shipment.shipmentRouter);
 router.use('/entity-bankings', entityBanking.entityBankingRouter);
+router.use('/item-transfers', itemTransfers.itemTransfersRouter);
 
 
 module.exports = router;

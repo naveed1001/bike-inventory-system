@@ -1,4 +1,4 @@
-const { validateCreateUser, validateUpdateUser, validateLoginUser } = require('./usersValidator');
+const { validateCreateUser, validateUpdateUser, validateLoginUser, validateActivateDeactivateUser } = require('./usersValidator');
 const { ApiError, ApiResponse } = require('../../utils');
 const UsersRepository = require('./usersRepository');
 const { StatusCodes } = require('http-status-codes');
@@ -109,9 +109,9 @@ class UsersService {
 
         const [permissionsRows] = await pool.execute(
             `SELECT p.permission_key 
-         FROM role_permissions rp 
-         JOIN permissions p ON rp.permission_id = p.id 
-         WHERE rp.role_id = ? AND rp.deleted_at IS NULL AND p.deleted_at IS NULL`,
+             FROM role_permissions rp 
+             JOIN permissions p ON rp.permission_id = p.id 
+             WHERE rp.role_id = ? AND rp.deleted_at IS NULL AND p.deleted_at IS NULL`,
             [foundUser.role_id]
         );
         const permissions = permissionsRows.map(row => row.permission_key);
@@ -191,6 +191,26 @@ class UsersService {
             code: StatusCodes.OK,
             message: 'Users retrieved successfully',
             payload: { users }
+        });
+    }
+
+    async activateDeactivateUser(id, isActive) {
+        const { error } = validateActivateDeactivateUser({ isActive });
+        if (error) throw new ApiError(error.details[0].message, StatusCodes.BAD_REQUEST);
+
+        const parsedId = parseInt(id, 10);
+        if (isNaN(parsedId) || parsedId <= 0) {
+            throw new ApiError('Invalid user ID', StatusCodes.BAD_REQUEST);
+        }
+        const user = await UsersRepository.activateDeactivateUser(parsedId, isActive);
+        if (!user) {
+            throw new ApiError('User not found', StatusCodes.NOT_FOUND);
+        }
+        const message = isActive ? 'User activated successfully' : 'User deactivated successfully';
+        return new ApiResponse({
+            code: StatusCodes.OK,
+            message,
+            payload: user
         });
     }
 }

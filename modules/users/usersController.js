@@ -76,3 +76,8 @@ exports.searchUserByUsername = asyncHandler(async (req, res) => {
     const response = await UsersService.searchUserByUsername(req.query.username);
     res.status(response.code).json(response);
 });
+
+exports.activateDeactivateUser = asyncHandler(async (req, res) => {
+    const response = await UsersService.activateDeactivateUser(req.params.id, req.body.isActive);
+    res.status(response.code).json(response);
+});

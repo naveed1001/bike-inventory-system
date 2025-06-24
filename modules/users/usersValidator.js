@@ -191,8 +191,16 @@ const loginUserSchema = Joi.object({
         }),
 });
 
+const activateDeactivateUserSchema = Joi.object({
+    isActive: Joi.boolean().required().messages({
+        'any.required': 'isActive is required',
+        'boolean.base': 'isActive must be a boolean'
+    })
+});
+
 const validateCreateUser = (data) => createUserSchema.validate(data, { abortEarly: false });
 const validateUpdateUser = (data) => updateUserSchema.validate(data, { abortEarly: false });
 const validateLoginUser = (data) => loginUserSchema.validate(data, { abortEarly: false });
+const validateActivateDeactivateUser = (data) => activateDeactivateUserSchema.validate(data, { abortEarly: false });
 
-module.exports = { validateCreateUser, validateUpdateUser, validateLoginUser };
+module.exports = { validateCreateUser, validateUpdateUser, validateLoginUser, validateActivateDeactivateUser };

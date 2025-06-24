@@ -12,5 +12,6 @@ router.put('/update-user/:id', authenticate, authorize('users_update'), usersCon
 router.delete('/delete-user/:id', authenticate, authorize('users_delete'), usersController.deleteUser);
 router.put('/reset-password/:id', authenticate, authorize('users_reset_password'), usersController.resetUserPassword);
 router.get('/search-users', authenticate, authorize('users_search'), usersController.searchUserByUsername);
+router.post('/activate-deactivate-user/:id', authenticate, authorize('users_activate_deactivate'), usersController.activateDeactivateUser);
 
 module.exports = router;

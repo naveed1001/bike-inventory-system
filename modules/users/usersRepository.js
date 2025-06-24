@@ -156,4 +156,28 @@ const findUserByUsername = async (username, exactMatch = false, includePassword 
     return users;
 };
 
-module.exports = { createUser, findAllUsers, findUserById, findUserByUsername, updateUser, updateLastLogin, deleteUser, updateUserPassword };
+const activateDeactivateUser = async (id, isActive) => {
+    const connection = await pool.getConnection();
+
+    await connection.beginTransaction();
+    const [existing] = await connection.execute(
+        'SELECT id FROM users WHERE id = ?',
+        [id]
+    );
+    if (!existing.length) throw new Error('User not found');
+
+    const updateQuery = isActive
+        ? 'UPDATE users SET deleted_at = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+        : 'UPDATE users SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ?';
+    
+    await connection.execute(updateQuery, [id]);
+    const [updatedUser] = await connection.execute(
+        'SELECT id, username, email, phone, address, profile_image, role_id, employed_at, banking_id, last_login, created_at, updated_at, deleted_at FROM users WHERE id = ?',
+        [id]
+    );
+    await connection.commit();
+
+    return updatedUser[0];
+};
+
+module.exports = { createUser, findAllUsers, findUserById, findUserByUsername, updateUser, updateLastLogin, deleteUser, updateUserPassword, activateDeactivateUser };
